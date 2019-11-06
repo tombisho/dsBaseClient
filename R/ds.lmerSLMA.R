@@ -1,5 +1,5 @@
 
-#' @title ds.lmerSLMA.o calling lmerDS2.o
+#' @title ds.lmerSLMA calling lmerDS2
 #' @description Fits a linear mixed effects model (lme) on data from a single or multiple sources
 #' @details  Fits a linear mixed effects model (lme) on data from a single source or from multiple sources.
 #' In the latter case, the lme is fitted to convergence in each data source and the
@@ -41,7 +41,7 @@
 #' fixed effects portion of the model. The idea is to compare the models with and without the fixed effects to see
 #' if they are significantly different (e.g. using ANOVA). REML assumes that fixed effects structure is correct and
 #' so for this type of comparison, it should not be used.
-#' @return many of the elements of the output list returned by ds.lmerSLMA.o from
+#' @return many of the elements of the output list returned by ds.lmerSLMA from
 #' each study separately are
 #' equivalent to those from lmer() in lme4 with potentially disclosive elements
 #' such as individual-level residuals and linear predictors blocked.
@@ -67,7 +67,7 @@
 #' @return data:- - equivalent to input parameter dataName (above)
 #' @return call:- - summary of key elements of the call to fit the model
 #' @return there are a small number of more esoteric items of information returned
-#' by ds.lmerSLMA.o. Additional information about these can be found in the help
+#' by ds.lmerSLMA. Additional information about these can be found in the help
 #' file for the lmer() function in the lme4 package.
 #' @return input.beta.matrix.for.SLMA:- a matrix containing the vector of coefficient
 #' estimates from each study. In combination with the corresponding standard errors
@@ -83,7 +83,7 @@
 #' likelihood (REML) or via fixed effects meta-analysis (FE)
 #' @author Tom Bishop
 #' @export
-ds.lmerSLMA.o<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.metafor=TRUE,dataName=NULL,
+ds.lmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.metafor=TRUE,dataName=NULL,
                        checks=FALSE, datasources=NULL, REML=TRUE) {
   
   # details are provided look for 'opal' objects in the environment
@@ -142,7 +142,7 @@ ds.lmerSLMA.o<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.me
 
   #NOW CALL SECOND COMPONENT OF glmDS TO GENERATE SCORE VECTORS AND INFORMATION MATRICES
 
-  cally2 <- call('lmerSLMADS2.o', formula, offset, weights, dataName, REML)
+  cally2 <- call('lmerSLMADS2', formula, offset, weights, dataName, REML)
   
   study.summary <- datashield.aggregate(datasources, cally2)
   
@@ -359,4 +359,4 @@ ds.lmerSLMA.o<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.me
   
 }
 
-# ds.lmerSLMA.o
+# ds.lmerSLMA
