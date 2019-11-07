@@ -206,8 +206,8 @@ ds.lmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.meta
   numcoefficients.max<-0
 
   for(g in study.include.in.analysis){
-    if(length(study.summary[[g]][[1]]$coefficients[,1])>numcoefficients.max){
-      numcoefficients.max<-length(study.summary[[g]][[1]]$coefficients[,1])
+    if(length(study.summary[[g]]$coefficients[,1])>numcoefficients.max){
+      numcoefficients.max<-length(study.summary[[g]]$coefficients[,1])
     }
   }
 
@@ -218,8 +218,8 @@ ds.lmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.meta
 
 
   for(k in study.include.in.analysis){
-    betamatrix[,k]<-study.summary[[k]][[1]]$coefficients[,1]
-    sematrix[,k]<-study.summary[[k]][[1]]$coefficients[,2]
+    betamatrix[,k]<-study.summary[[k]]$coefficients[,1]
+    sematrix[,k]<-study.summary[[k]]$coefficients[,2]
   }
 
   ################################################
@@ -239,8 +239,8 @@ ds.lmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.meta
     ses.study.names.list<-c(ses.study.names.list,paste0("ses study ",as.character(v)))
   }
 
-  dimnames(betamatrix)<-list(dimnames(study.summary[[1]][[1]]$coefficients)[[1]], betas.study.names.list)
-  dimnames(sematrix)<-list(dimnames(study.summary[[1]][[1]]$coefficients)[[1]], ses.study.names.list)
+  dimnames(betamatrix)<-list(dimnames(study.summary[[1]]$coefficients)[[1]], betas.study.names.list)
+  dimnames(sematrix)<-list(dimnames(study.summary[[1]]$coefficients)[[1]], ses.study.names.list)
 
   output.summary.text<-paste0("list(")
 
