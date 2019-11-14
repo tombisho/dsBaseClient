@@ -1,6 +1,6 @@
 
-#' @title ds.lmerSLMA calling lmerDS2
-#' @description Fits a linear mixed effects model (lme) on data from a single or multiple sources
+#' @title ds.glmerSLMA calling glmerDS2
+#' @description Fits a generalised linear mixed effects model (glme) on data from a single or multiple sources
 #' @details  Fits a linear mixed effects model (lme) on data from a single source or from multiple sources.
 #' In the latter case, the lme is fitted to convergence in each data source and the
 #' estimates and standard errors
@@ -36,11 +36,7 @@
 #' restricted maximum likelihood (REML), or fixed effects meta-analysis (FE).
 #' @param datasources a list of \code{\link{DSConnection-class}} objects obtained after login. If the <datasources>
 #' the default set of connections will be used: see \link{datashield.connections_default}.
-#' @param REML A boolean indicating whether REstricted Maximum Likelihood (REML) should be used for
-#' the parameter estimation criterion. This is useful for likelihood ratio tests when assessing the quality of the
-#' fixed effects portion of the model. The idea is to compare the models with and without the fixed effects to see
-#' if they are significantly different (e.g. using ANOVA). REML assumes that fixed effects structure is correct and
-#' so for this type of comparison, it should not be used.
+#' @param family it's the family
 #' @param control_opt TBC
 #' @param control_tol TBC
 #' @param verbose TBC
@@ -86,8 +82,8 @@
 #' likelihood (REML) or via fixed effects meta-analysis (FE)
 #' @author Tom Bishop
 #' @export
-ds.lmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.metafor=TRUE,dataName=NULL,
-                       checks=FALSE, datasources=NULL, REML=TRUE, control_opt = NULL, control_tol = NULL, verbose = FALSE) {
+ds.glmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.metafor=TRUE,dataName=NULL,
+                       checks=FALSE, datasources=NULL, family=NULL, control_opt = NULL, control_tol = NULL, verbose = FALSE) {
   
   # details are provided look for 'opal' objects in the environment
   if(is.null(datasources)){
@@ -114,8 +110,10 @@ ds.lmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.meta
   
   formula <- as.formula(formula)
   
-  # set family to gaussian
-  family <- 'gaussian'
+  # check that 'family' was set
+  if(is.null(family)){
+    stop(" Please provide a valid 'family' argument!", call.=FALSE)
+  }
   
   # if the argument 'dataName' is set, check that the data frame is defined (i.e. exists) on the server site
   if(!(is.null(dataName))){
@@ -145,7 +143,7 @@ ds.lmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.meta
 
   #NOW CALL SECOND COMPONENT OF glmDS TO GENERATE SCORE VECTORS AND INFORMATION MATRICES
 
-  cally2 <- call('lmerSLMADS2', formula, offset, weights, dataName, REML, control_opt, control_tol, verbose)
+  cally2 <- call('glmerSLMADS2', formula, offset, weights, dataName, family, control_opt, control_tol, verbose)
   
   study.summary <- datashield.aggregate(datasources, cally2)
   

@@ -10,6 +10,7 @@ Imports:
     fields,
     metafor,
     opaladmin,
-    opal
+    opal,
+    lme4
 RoxygenNote: 6.1.1
 Encoding: UTF-8
