@@ -1,7 +1,7 @@
 
 #' @title ds.glmerSLMA calling glmerDS2
 #' @description Fits a generalised linear mixed effects model (glme) on data from a single or multiple sources
-#' @details  Fits a lgeneralised linear mixed effects model (glme) on data from a single source or from multiple sources.
+#' @details  Fits a generalised linear mixed effects model (glme) on data from a single source or from multiple sources.
 #' In the latter case, the glme is fitted to convergence in each data source and the
 #' estimates and standard errors
 #' returned from each study separately. When these are then pooled using a function such as
@@ -53,14 +53,14 @@
 #' is "bobyqa". It is also possible to specify "Nealder_Mead". See lme4's glmer() function.
 #' @param control_tol optional numeric used to set the value of check.conv.grad, the gradient of the deviance
 #' function for convergence. See lme4's glmer() function.
-#' @param verbose integer scalar. If > 0 verbose output is generated during the optimization of the
-#'  parameter estimates. If > 1 verbose output is generated during the individual penalized 
-#'  iteratively reweighted least squares (PIRLS) steps. The output is contained in each studies' summary
-#'  in the "iterations" slot.
-#'  @param start_theta numeric vector of length equal to number of random effects. Specify to retain
-#'  more control over the optimisation. See glmer() for more details.
-#'  @param start_fixef numeric vector of length equal to number of fixed effects (NB including intercept). 
-#'   Specify to retain more control over the optimisation. See glmer() for more details.
+#' @param verbose integer scalar. If > 0 verbose output is generated during the optimization of the 
+#' parameter estimates. If > 1 verbose output is generated during the individual penalized 
+#' iteratively reweighted least squares (PIRLS) steps. The output is contained in each studies' summary
+#' in the "iterations" slot.
+#' @param start_theta numeric vector of length equal to number of random effects. Specify to retain
+#' more control over the optimisation. See glmer() for more details.
+#' @param start_fixef numeric vector of length equal to number of fixed effects (NB including intercept). 
+#' Specify to retain more control over the optimisation. See glmer() for more details.
 #' @return many of the elements of the output list returned by ds.glmerSLMA from
 #' each study separately are
 #' equivalent to those from glmer() in lme4 with potentially disclosive elements
