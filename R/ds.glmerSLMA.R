@@ -1,8 +1,8 @@
 
 #' @title ds.glmerSLMA calling glmerDS2
 #' @description Fits a generalised linear mixed effects model (glme) on data from a single or multiple sources
-#' @details  Fits a linear mixed effects model (lme) on data from a single source or from multiple sources.
-#' In the latter case, the lme is fitted to convergence in each data source and the
+#' @details  Fits a lgeneralised linear mixed effects model (glme) on data from a single source or from multiple sources.
+#' In the latter case, the glme is fitted to convergence in each data source and the
 #' estimates and standard errors
 #' returned from each study separately. When these are then pooled using a function such as
 #' ds.metafor, this is a form of study level meta-analysis (SLMA). The SLMA approach offers some advantages
@@ -11,12 +11,15 @@
 #' or centre effect. In particular fixed effects cannot simply be used in this way when there
 #' there is heterogeneity in the effect of scientific interest.
 #' @param formula Denotes an object of class formula which is a character string which describes
-#' the model to be fitted. Most shortcut notation allowed by Rlme4's lmer() function is
-#' also allowed by ds.lmerSLMA. Many lmes can be fitted very simply using a formula like:
+#' the model to be fitted. Most shortcut notation allowed by lme4's glmer() function is
+#' also allowed by ds.glmerSLMA. Many lmes can be fitted very simply using a formula like:
 #' "y~a+b+(1|c)" which simply means fit a lme with y as the outcome variable with a and b as fixed effects, and c
 #' as a random effect or grouping factor. This allows for a random intercept between groups.
 #' By default all such models also include an intercept (regression constant) term.
 #' It is also possible to fit models with random slopes by specifying a model such as "y~a+b+(1+b|c)"
+#' Implicit nesting can be specified with formulae such as "y~a+b+(1|c/d)" or "y~a+b+(1|c)+(1|c:d)"
+#' See the following for more details:
+#' https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf
 #' @param offset  A character string specifying the name of a variable to be used as
 #' an offset (effectively
 #' a component of the linear predictor of the lme which has a known coefficient a-priori and so does not need to be
@@ -36,13 +39,31 @@
 #' restricted maximum likelihood (REML), or fixed effects meta-analysis (FE).
 #' @param datasources a list of \code{\link{DSConnection-class}} objects obtained after login. If the <datasources>
 #' the default set of connections will be used: see \link{datashield.connections_default}.
-#' @param family it's the family
-#' @param control_opt TBC
-#' @param control_tol TBC
-#' @param verbose TBC
-#' @return many of the elements of the output list returned by ds.lmerSLMA from
+#' @param family This argument identifies the error distribution function to use in
+#' the model. At present
+#' ds.glmerSLMA has been written to fit family="binomial"
+#' (i.e. a conventional
+#' unconditional logistic regression model), and family = "poisson" (i.e. a
+#' Poisson regression model At present the binomial family is coupled with a
+#' 'logistic' link function and the poisson family with a 'log' link function.
+#' For a Gaussian error distribution (i.e. a
+#' conventional linear model with normally distributed errors), the ds.lmerSLMA 
+#' function should be used. 
+#' @param control_opt optional charcter vector length 1 or 2 specifying the optimiser to be used. The default optimiser
+#' is "bobyqa". It is also possible to specify "Nealder_Mead". See lme4's glmer() function.
+#' @param control_tol optional numeric used to set the value of check.conv.grad, the gradient of the deviance
+#' function for convergence. See lme4's glmer() function.
+#' @param verbose integer scalar. If > 0 verbose output is generated during the optimization of the
+#'  parameter estimates. If > 1 verbose output is generated during the individual penalized 
+#'  iteratively reweighted least squares (PIRLS) steps. The output is contained in each studies' summary
+#'  in the "iterations" slot.
+#'  @param start_theta numeric vector of length equal to number of random effects. Specify to retain
+#'  more control over the optimisation. See glmer() for more details.
+#'  @param start_fixef numeric vector of length equal to number of fixed effects (NB including intercept). 
+#'   Specify to retain more control over the optimisation. See glmer() for more details.
+#' @return many of the elements of the output list returned by ds.glmerSLMA from
 #' each study separately are
-#' equivalent to those from lmer() in lme4 with potentially disclosive elements
+#' equivalent to those from glmer() in lme4 with potentially disclosive elements
 #' such as individual-level residuals and linear predictors blocked.
 #' The return results from each study appear first in the return list with one
 #' block of results from each study in the order they appear in datasources.
@@ -66,8 +87,8 @@
 #' @return data:- - equivalent to input parameter dataName (above)
 #' @return call:- - summary of key elements of the call to fit the model
 #' @return there are a small number of more esoteric items of information returned
-#' by ds.lmerSLMA. Additional information about these can be found in the help
-#' file for the lmer() function in the lme4 package.
+#' by ds.glmerSLMA. Additional information about these can be found in the help
+#' file for the glmer() function in the lme4 package.
 #' @return input.beta.matrix.for.SLMA:- a matrix containing the vector of coefficient
 #' estimates from each study. In combination with the corresponding standard errors
 #' (see input.se.matrix.for.SLMA) these can be imported directly into a study level
@@ -83,7 +104,8 @@
 #' @author Tom Bishop
 #' @export
 ds.glmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.metafor=TRUE,dataName=NULL,
-                       checks=FALSE, datasources=NULL, family=NULL, control_opt = NULL, control_tol = NULL, verbose = FALSE) {
+                       checks=FALSE, datasources=NULL, family=NULL, control_opt = NULL, control_tol = NULL, 
+                       verbose = 0, start_theta = NULL, start_fixef = NULL) {
   
   # details are provided look for 'opal' objects in the environment
   if(is.null(datasources)){
@@ -140,10 +162,32 @@ ds.glmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.met
   formula <- gsub(" ", "", formula, fixed = TRUE)
   formula <- as.formula(formula)
   #formula <- strsplit(x = formurand()la, split="|", fixed=TRUE)[[1]]
+  
+  # sort out the start values into transmissable format
+  
+  if(!is.null(start_theta)){
+    theta = paste0(as.character(start_theta), collapse=",")
+  }else{
+    theta = NULL
+  }
+  if(!is.null(start_fixef)){
+    fixef = paste0(as.character(start_fixef), collapse=",")
+  }else{
+    fixef = NULL
+  }
+  
+  # sort out the optimiser values into transmissable format
 
+  if(!is.null(control_opt)){
+    control_opt = paste0(as.character(control_opt), collapse=",")
+  }else{
+    control_opt = NULL
+  }
+  
+  
   #NOW CALL SECOND COMPONENT OF glmDS TO GENERATE SCORE VECTORS AND INFORMATION MATRICES
 
-  cally2 <- call('glmerSLMADS2', formula, offset, weights, dataName, family, control_opt, control_tol, verbose)
+  cally2 <- call('glmerSLMADS2', formula, offset, weights, dataName, family, control_opt, control_tol, verbose, theta, fixef)
   
   study.summary <- datashield.aggregate(datasources, cally2)
   
@@ -193,7 +237,8 @@ ds.glmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.met
 
   if(all.studies.valid)
   {
-    cat("\nAll studies passed disclosure tests\n\n\n")
+    cat("\nAll studies passed disclosure tests\n")
+    cat("Please check for convergence warnings in the study summaries\n\n\n")
   }
 
 

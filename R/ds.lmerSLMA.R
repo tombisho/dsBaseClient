@@ -11,12 +11,15 @@
 #' or centre effect. In particular fixed effects cannot simply be used in this way when there
 #' there is heterogeneity in the effect of scientific interest.
 #' @param formula Denotes an object of class formula which is a character string which describes
-#' the model to be fitted. Most shortcut notation allowed by Rlme4's lmer() function is
+#' the model to be fitted. Most shortcut notation allowed by lme4's lmer() function is
 #' also allowed by ds.lmerSLMA. Many lmes can be fitted very simply using a formula like:
 #' "y~a+b+(1|c)" which simply means fit a lme with y as the outcome variable with a and b as fixed effects, and c
 #' as a random effect or grouping factor. This allows for a random intercept between groups.
 #' By default all such models also include an intercept (regression constant) term.
 #' It is also possible to fit models with random slopes by specifying a model such as "y~a+b+(1+b|c)"
+#' Implicit nesting can be specified with formulae such as "y~a+b+(1|c/d)" or "y~a+b+(1|c)+(1|c:d)"
+#' See the following for more details:
+#' https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf
 #' @param offset  A character string specifying the name of a variable to be used as
 #' an offset (effectively
 #' a component of the linear predictor of the lme which has a known coefficient a-priori and so does not need to be
@@ -40,10 +43,15 @@
 #' the parameter estimation criterion. This is useful for likelihood ratio tests when assessing the quality of the
 #' fixed effects portion of the model. The idea is to compare the models with and without the fixed effects to see
 #' if they are significantly different (e.g. using ANOVA). REML assumes that fixed effects structure is correct and
-#' so for this type of comparison, it should not be used.
-#' @param control_opt TBC
-#' @param control_tol TBC
-#' @param verbose TBC
+#' so for this type of comparison, it should not be used. See lme4's lmer() function for more details.
+#' @param control_opt optional charcter vector length 1 specifying the optimiser to be used. The default optimiser
+#' is "bobyqa". It is also possible to specify "Nealder_Mead". See lme4's lmer() function.
+#' @param control_tol optional numeric used to set the value of check.conv.grad, the gradient of the deviance
+#' function for convergence. See lme4's lmer() function.
+#' @param verbose integer scalar. If > 0 verbose output is generated during the optimization of the
+#'  parameter estimates. If > 1 verbose output is generated during the individual penalized 
+#'  iteratively reweighted least squares (PIRLS) steps. The output is contained in each studies' summary
+#'  in the "iterations" slot.
 #' @return many of the elements of the output list returned by ds.lmerSLMA from
 #' each study separately are
 #' equivalent to those from lmer() in lme4 with potentially disclosive elements
@@ -87,7 +95,7 @@
 #' @author Tom Bishop
 #' @export
 ds.lmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.metafor=TRUE,dataName=NULL,
-                       checks=FALSE, datasources=NULL, REML=TRUE, control_opt = NULL, control_tol = NULL, verbose = FALSE) {
+                       checks=FALSE, datasources=NULL, REML=TRUE, control_opt = NULL, control_tol = NULL, verbose = 0) {
   
   # details are provided look for 'opal' objects in the environment
   if(is.null(datasources)){
@@ -195,7 +203,8 @@ ds.lmerSLMA<-function(formula=NULL, offset=NULL, weights=NULL, combine.with.meta
 
   if(all.studies.valid)
   {
-    cat("\nAll studies passed disclosure tests\n\n\n")
+    cat("\nAll studies passed disclosure tests\n")
+    cat("Please check for convergence warnings in the study summaries\n\n\n")
   }
 
 

@@ -7,16 +7,20 @@
 ds.glmerSLMA(formula = NULL, offset = NULL, weights = NULL,
   combine.with.metafor = TRUE, dataName = NULL, checks = FALSE,
   datasources = NULL, family = NULL, control_opt = NULL,
-  control_tol = NULL, verbose = FALSE)
+  control_tol = NULL, verbose = 0, start_theta = NULL,
+  start_fixef = NULL)
 }
 \arguments{
 \item{formula}{Denotes an object of class formula which is a character string which describes
-the model to be fitted. Most shortcut notation allowed by Rlme4's lmer() function is
-also allowed by ds.lmerSLMA. Many lmes can be fitted very simply using a formula like:
+the model to be fitted. Most shortcut notation allowed by lme4's glmer() function is
+also allowed by ds.glmerSLMA. Many lmes can be fitted very simply using a formula like:
 "y~a+b+(1|c)" which simply means fit a lme with y as the outcome variable with a and b as fixed effects, and c
 as a random effect or grouping factor. This allows for a random intercept between groups.
 By default all such models also include an intercept (regression constant) term.
-It is also possible to fit models with random slopes by specifying a model such as "y~a+b+(1+b|c)"}
+It is also possible to fit models with random slopes by specifying a model such as "y~a+b+(1+b|c)"
+Implicit nesting can be specified with formulae such as "y~a+b+(1|c/d)" or "y~a+b+(1|c)+(1|c:d)"
+See the following for more details:
+https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf}
 
 \item{offset}{A character string specifying the name of a variable to be used as
 an offset (effectively
@@ -42,18 +46,36 @@ Processing stops if a non existing data frame is indicated.}
 \item{datasources}{a list of \code{\link{DSConnection-class}} objects obtained after login. If the <datasources>
 the default set of connections will be used: see \link{datashield.connections_default}.}
 
-\item{family}{it's the family}
+\item{family}{This argument identifies the error distribution function to use in
+the model. At present
+ds.glmerSLMA has been written to fit family="binomial"
+(i.e. a conventional
+unconditional logistic regression model), and family = "poisson" (i.e. a
+Poisson regression model At present the binomial family is coupled with a
+'logistic' link function and the poisson family with a 'log' link function.
+For a Gaussian error distribution (i.e. a
+conventional linear model with normally distributed errors), the ds.lmerSLMA 
+function should be used.}
 
-\item{control_opt}{TBC}
+\item{control_opt}{optional charcter vector length 1 or 2 specifying the optimiser to be used. The default optimiser
+is "bobyqa". It is also possible to specify "Nealder_Mead". See lme4's glmer() function.}
 
-\item{control_tol}{TBC}
+\item{control_tol}{optional numeric used to set the value of check.conv.grad, the gradient of the deviance
+function for convergence. See lme4's glmer() function.}
 
-\item{verbose}{TBC}
+\item{verbose}{integer scalar. If > 0 verbose output is generated during the optimization of the
+parameter estimates. If > 1 verbose output is generated during the individual penalized 
+iteratively reweighted least squares (PIRLS) steps. The output is contained in each studies' summary
+in the "iterations" slot.
+@param start_theta numeric vector of length equal to number of random effects. Specify to retain
+more control over the optimisation. See glmer() for more details.
+@param start_fixef numeric vector of length equal to number of fixed effects (NB including intercept). 
+ Specify to retain more control over the optimisation. See glmer() for more details.}
 }
 \value{
-many of the elements of the output list returned by ds.lmerSLMA from
+many of the elements of the output list returned by ds.glmerSLMA from
 each study separately are
-equivalent to those from lmer() in lme4 with potentially disclosive elements
+equivalent to those from glmer() in lme4 with potentially disclosive elements
 such as individual-level residuals and linear predictors blocked.
 The return results from each study appear first in the return list with one
 block of results from each study in the order they appear in datasources.
@@ -88,8 +110,8 @@ data:- - equivalent to input parameter dataName (above)
 call:- - summary of key elements of the call to fit the model
 
 there are a small number of more esoteric items of information returned
-by ds.lmerSLMA. Additional information about these can be found in the help
-file for the lmer() function in the lme4 package.
+by ds.glmerSLMA. Additional information about these can be found in the help
+file for the glmer() function in the lme4 package.
 
 input.beta.matrix.for.SLMA:- a matrix containing the vector of coefficient
 estimates from each study. In combination with the corresponding standard errors
@@ -110,8 +132,8 @@ likelihood (REML) or via fixed effects meta-analysis (FE)
 Fits a generalised linear mixed effects model (glme) on data from a single or multiple sources
 }
 \details{
-Fits a linear mixed effects model (lme) on data from a single source or from multiple sources.
-In the latter case, the lme is fitted to convergence in each data source and the
+Fits a lgeneralised linear mixed effects model (glme) on data from a single source or from multiple sources.
+In the latter case, the glme is fitted to convergence in each data source and the
 estimates and standard errors
 returned from each study separately. When these are then pooled using a function such as
 ds.metafor, this is a form of study level meta-analysis (SLMA). The SLMA approach offers some advantages

@@ -33,10 +33,10 @@ test_that("simple lmerSLMA, intercept", {
     expect_length(lmerSLMA.res$output.summary, 5)
     expect_equal(class(lmerSLMA.res$output.summary$input.beta.matrix.for.SLMA), "matrix")
     expect_equal(class(lmerSLMA.res$output.summary$input.se.matrix.for.SLMA), "matrix")
-    expect_length(lmerSLMA.res$output.summary$study1, 19)
+    expect_length(lmerSLMA.res$output.summary$study1, 20)
     expect_equal(class(lmerSLMA.res$output.summary$study1$coefficients), "matrix")
-    expect_equal(as.numeric(lmerSLMA.res$output.summary$study1$AICtab), 3470, tolerance = 0.001)
-    expect_equal(as.numeric(lmerSLMA.res$output.summary$study1$devcomp$dims[1]), 873)
+    expect_equal(as.numeric(lmerSLMA.res$output.summary$study1$AICtab), 4415, tolerance = 0.001)
+    expect_equal(as.numeric(lmerSLMA.res$output.summary$study1$devcomp$dims[1]), 1050)
     expect_equal(as.numeric(lmerSLMA.res$output.summary$study1$ngrps), 8)
 })
 
