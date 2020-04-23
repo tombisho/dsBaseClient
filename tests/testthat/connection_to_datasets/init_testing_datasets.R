@@ -11,24 +11,17 @@ init.testing.datasets <- function()
   if (ds.test_env$secure_login_details)
   {
     #reading data from local files 
-    ds.test_env$local.values.1 <- read.csv("data_files/DATASET1.csv", header = TRUE)
-    ds.test_env$local.values.2 <- read.csv("data_files/DATASET2.csv", header = TRUE)
-    ds.test_env$local.values.3 <- read.csv("data_files/DATASET3.csv", header = TRUE)
+    ds.test_env$local.values.1 <- read.csv("data_files/TESTING/DATASET1.csv", header = TRUE)
+    ds.test_env$local.values.2 <- read.csv("data_files/TESTING/DATASET2.csv", header = TRUE)
+    ds.test_env$local.values.3 <- read.csv("data_files/TESTING/DATASET3.csv", header = TRUE)
     ds.test_env$local.values   <- rbind(ds.test_env$local.values.1,ds.test_env$local.values.2,ds.test_env$local.values.3)
     if (ds.test_env$driver == "OpalDriver") 
     {
-      #connecting to the servers
-      ds.test_env$server <- c("study1", "study2", "study3")
-      ds.test_env$url <- c(ds.test_env$ip_address_1,ds.test_env$ip_address_2,ds.test_env$ip_address_3)
-      ds.test_env$user <- c(ds.test_env$user_1,ds.test_env$user_2,ds.test_env$user_3)
-      ds.test_env$password <- c(ds.test_env$password_1,ds.test_env$password_2,ds.test_env$password_3)
-      ds.test_env$table <- c("TESTING.DATASET1", "TESTING.DATASET2", "TESTING.DATASET3")
-      ds.test_env$login.data <- datashield.build.login.data.frame.o(ds.test_env$server,
-                                                                ds.test_env$url,
-                                                                ds.test_env$table,
-                                                                ds.test_env$user,
-                                                                ds.test_env$password,
-                                                                .silent = TRUE)
+      builder <- DSI::newDSLoginBuilder(.silent = TRUE)
+      builder$append(server = "study1", url = ds.test_env$ip_address_1, user = ds.test_env$user_1, password = ds.test_env$password_1, table = "TESTING.DATASET1")
+      builder$append(server = "study2", url = ds.test_env$ip_address_2, user = ds.test_env$user_2, password = ds.test_env$password_2, table = "TESTING.DATASET2")
+      builder$append(server = "study3", url = ds.test_env$ip_address_3, user = ds.test_env$user_3, password = ds.test_env$password_3, table = "TESTING.DATASET3")
+      ds.test_env$login.data <- builder$build()
     }
     else 
     {
@@ -37,7 +30,7 @@ init.testing.datasets <- function()
     ds.test_env$stats.var <- list('ID','CHARACTER', 'LOGICAL','NA_VALUES','INTEGER','NULL_VALUES',
                                   'NON_NEGATIVE_INTEGER','POSITIVE_INTEGER','NEGATIVE_INTEGER',
                                   'NUMERIC', 'NON_NEGATIVE_NUMERIC','POSITIVE_NUMERIC','NEGATIVE_NUMERIC','FACTOR_CHARACTER', 
-                                  'FACTOR_INTEGER','IDENTIFIER','CATEGORY','IDENTIFIER','CATEGORY')
+                                  'FACTOR_INTEGER','IDENTIFIER','CATEGORY','IDENTIFIER','CATEGORY', 'NUMERIC_ONE_CHANGE', 'INTEGER_ONE_CHANGE')
   }
 }
 
@@ -47,20 +40,12 @@ init.dataset.3 <- function()
   log.out.data.server()
   if (ds.test_env$secure_login_details)
   {
-    ds.test_env$local.values.3 <- read.csv("data_files/DATASET3.csv", header = TRUE)
+    ds.test_env$local.values.3 <- read.csv("data_files/TESTING/DATASET3.csv", header = TRUE)
     if (ds.test_env$driver == "OpalDriver")
     {
-      ds.test_env$server <- c("study3")
-      ds.test_env$url <- c(ds.test_env$ip_address_3)
-      ds.test_env$user <- c(ds.test_env$user_3)
-      ds.test_env$password <- c(ds.test_env$password_3)
-      ds.test_env$table <- c("TESTING.DATASET3")
-      ds.test_env$login.data <- datashield.build.login.data.frame.o(ds.test_env$server,
-                                                                    ds.test_env$url,
-                                                                    ds.test_env$table,
-                                                                    ds.test_env$user,
-                                                                    ds.test_env$password,
-                                                                    .silent = TRUE)
+      builder <- DSI::newDSLoginBuilder(.silent = TRUE)
+      builder$append(server = "study3", url = ds.test_env$ip_address_3, user = ds.test_env$user_3, password = ds.test_env$password_3, table = "TESTING.DATASET3")
+      ds.test_env$login.data <- builder$build()
     }
     else
     {
@@ -70,7 +55,7 @@ init.dataset.3 <- function()
     ds.test_env$stats.var <- list('ID','CHARACTER', 'LOGICAL','NA_VALUES','INTEGER','NULL_VALUES',
                                   'NON_NEGATIVE_INTEGER','POSITIVE_INTEGER','NEGATIVE_INTEGER',
                                   'NUMERIC', 'NON_NEGATIVE_NUMERIC','POSITIVE_NUMERIC','NEGATIVE_NUMERIC','FACTOR_CHARACTER', 
-                                  'FACTOR_INTEGER','IDENTIFIER','CATEGORY','IDENTIFIER','CATEGORY')
+                                  'FACTOR_INTEGER','IDENTIFIER','CATEGORY','IDENTIFIER','CATEGORY', 'NUMERIC_ONE_CHANGE', 'INTEGER_ONE_CHANGE')
   }
 }
 
@@ -80,20 +65,12 @@ init.dataset.2 <- function()
   log.out.data.server()
   if (ds.test_env$secure_login_details)
   {
-    ds.test_env$local.values.2 <- read.csv("data_files/DATASET2.csv", header = TRUE)
+    ds.test_env$local.values.2 <- read.csv("data_files/TESTING/DATASET2.csv", header = TRUE)
     if (ds.test_env$driver == "OpalDriver")
     {
-      ds.test_env$server <- c("study2")
-      ds.test_env$url <- c(ds.test_env$ip_address_2)
-      ds.test_env$user <- c(ds.test_env$user_2)
-      ds.test_env$password <- c(ds.test_env$password_2)
-      ds.test_env$table <- c("TESTING.DATASET2")
-      ds.test_env$login.data <- datashield.build.login.data.frame.o(ds.test_env$server,
-                                                                    ds.test_env$url,
-                                                                    ds.test_env$table,
-                                                                    ds.test_env$user,
-                                                                    ds.test_env$password,
-                                                                    .silent = TRUE)
+      builder <- DSI::newDSLoginBuilder(.silent = TRUE)
+      builder$append(server = "study2", url = ds.test_env$ip_address_2, user = ds.test_env$user_2, password = ds.test_env$password_2, table = "TESTING.DATASET2")
+      ds.test_env$login.data <- builder$build()
     }
     else
     {
@@ -103,7 +80,7 @@ init.dataset.2 <- function()
     ds.test_env$stats.var <- list('ID','CHARACTER', 'LOGICAL','NA_VALUES','INTEGER','NULL_VALUES',
                                   'NON_NEGATIVE_INTEGER','POSITIVE_INTEGER','NEGATIVE_INTEGER',
                                   'NUMERIC', 'NON_NEGATIVE_NUMERIC','POSITIVE_NUMERIC','NEGATIVE_NUMERIC','FACTOR_CHARACTER', 
-                                  'FACTOR_INTEGER','IDENTIFIER','CATEGORY','IDENTIFIER','CATEGORY')
+                                  'FACTOR_INTEGER','IDENTIFIER','CATEGORY','IDENTIFIER','CATEGORY', 'NUMERIC_ONE_CHANGE', 'INTEGER_ONE_CHANGE')
   }
 }
 
@@ -113,20 +90,12 @@ init.dataset.1 <- function()
   log.out.data.server()
   if (ds.test_env$secure_login_details)
   {
-    ds.test_env$local.values.1 <- read.csv("data_files/DATASET1.csv", header = TRUE)
+    ds.test_env$local.values.1 <- read.csv("data_files/TESTING/DATASET1.csv", header = TRUE)
     if (ds.test_env$driver == "OpalDriver")
     {
-      ds.test_env$server <- c("study1")
-      ds.test_env$url <- c(ds.test_env$ip_address_1)
-      ds.test_env$user <- c(ds.test_env$user_1)
-      ds.test_env$password <- c(ds.test_env$password_1)
-      ds.test_env$table <- c("TESTING.DATASET1")
-      ds.test_env$login.data <- datashield.build.login.data.frame.o(ds.test_env$server,
-                                                                    ds.test_env$url,
-                                                                    ds.test_env$table,
-                                                                    ds.test_env$user,
-                                                                    ds.test_env$password,
-                                                                    .silent = TRUE)
+      builder <- DSI::newDSLoginBuilder(.silent = TRUE)
+      builder$append(server = "study1", url = ds.test_env$ip_address_1, user = ds.test_env$user_1, password = ds.test_env$password_1, table = "TESTING.DATASET1")
+      ds.test_env$login.data <- builder$build()
     }
     else
     {
@@ -136,40 +105,60 @@ init.dataset.1 <- function()
     ds.test_env$stats.var <- list('ID','CHARACTER', 'LOGICAL','NA_VALUES','INTEGER','NULL_VALUES',
                                   'NON_NEGATIVE_INTEGER','POSITIVE_INTEGER','NEGATIVE_INTEGER',
                                   'NUMERIC', 'NON_NEGATIVE_NUMERIC','POSITIVE_NUMERIC','NEGATIVE_NUMERIC','FACTOR_CHARACTER', 
-                                  'FACTOR_INTEGER','IDENTIFIER','CATEGORY','IDENTIFIER','CATEGORY')
+                                  'FACTOR_INTEGER','IDENTIFIER','CATEGORY','IDENTIFIER','CATEGORY', 'NUMERIC_ONE_CHANGE', 'INTEGER_ONE_CHANGE')
   }
 }
 
-#####GROUP TESTING
+#####FACTOR_LEVELS
 
 # Connect to one server and the two studies. One local variables named ds.test_env$local.values.2is created.
-init.testing.group.dataset.1 <- function()
+init.testing.dataset.factor_levels <- function()
 {
   log.out.data.server()
   if (ds.test_env$secure_login_details)
   {
-    ds.test_env$local.values.1 <- read.csv("data_files/DATASET1.csv", header = TRUE)
+    ds.test_env$local.values.1 <- read.csv("data_files/FACTOR_LEVELS/FACTOR_LEVELS_DATASET1.csv", header = TRUE)
+    ds.test_env$local.values.2 <- read.csv("data_files/FACTOR_LEVELS/FACTOR_LEVELS_DATASET2.csv", header = TRUE)
+    ds.test_env$local.values.3 <- read.csv("data_files/FACTOR_LEVELS/FACTOR_LEVELS_DATASET3.csv", header = TRUE)
+    ds.test_env$local.values   <- rbind(ds.test_env$local.values.1,ds.test_env$local.values.2,ds.test_env$local.values.3)
     if (ds.test_env$driver == "OpalDriver")
     {
-      ds.test_env$server <- c("GROUP1", "GROUP2")
-      ds.test_env$url <- c(ds.test_env$ip_address_1,ds.test_env$ip_address_1)
-      ds.test_env$user <- c(ds.test_env$user_1,ds.test_env$user_1)
-      ds.test_env$password <- c(ds.test_env$password_1,ds.test_env$password_1)
-      ds.test_env$table <- c("TESTING_GROUP.GROUP1","TESTING_GROUP.GROUP2")
-      ds.test_env$login.data <- datashield.build.login.data.frame.o(ds.test_env$server,
-                                                                    ds.test_env$url,
-                                                                    ds.test_env$table,
-                                                                    ds.test_env$user,
-                                                                    ds.test_env$password,
-                                                                    .silent = TRUE)
+      builder <- DSI::newDSLoginBuilder(.silent = TRUE)
+      builder$append(server = "GROUP1", url = ds.test_env$ip_address_1, user = ds.test_env$user_1, password = ds.test_env$password_1, table = "FACTOR_LEVELS.FACTOR_LEVELS1")
+      builder$append(server = "GROUP2", url = ds.test_env$ip_address_1, user = ds.test_env$user_1, password = ds.test_env$password_1, table = "FACTOR_LEVELS.FACTOR_LEVELS2")
+      builder$append(server = "GROUP3", url = ds.test_env$ip_address_1, user = ds.test_env$user_1, password = ds.test_env$password_1, table = "FACTOR_LEVELS.FACTOR_LEVELS3")
+      ds.test_env$login.data <- builder$build()
     }
     else
     {
       login.data <- DSLite::setupDATASETTest("dsBase", env = ds.test_env)
       ds.test_env$login.data <- subset(login.data, server=="study1")
     }  
-    ds.test_env$stats.var <- list('ID',	'COLOURS'	,'COLOURS.NUMBERS',	'POSITIVE.NUMBERS',	'NEGATIVE.NUMBERS',	'NUMBERS',
-                                  'POSITIVE.DECIMAL',	'NEGATIVE.DECIMAL',	'DECIMAL',	'CHARACTERS')
+    ds.test_env$stats.var <- list('ID', 'COLOURS', 'COLOURS.NUMBERS', 'POSITIVE.NUMBERS', 'NEGATIVE.NUMBERS', 'NUMBERS',
+                                  'POSITIVE.DECIMAL', 'NEGATIVE.DECIMAL', 'DECIMAL', 'PLANETS.CHARACTERS')
+  }
+}
+
+init.testing.dataset.factor_levels.1 <- function()
+{
+  log.out.data.server()
+  if (ds.test_env$secure_login_details)
+  {
+    ds.test_env$local.values.1 <- read.csv("data_files/FACTOR_LEVELS/FACTOR_LEVELS_DATASET1.csv", header = TRUE)
+    ds.test_env$local.values   <- rbind(ds.test_env$local.values.1)
+    if (ds.test_env$driver == "OpalDriver")
+    {
+      builder <- DSI::newDSLoginBuilder(.silent = TRUE)
+      builder$append(server = "GROUP1", url = ds.test_env$ip_address_1, user = ds.test_env$user_1, password = ds.test_env$password_1, table = "FACTOR_LEVELS.FACTOR_LEVELS1")
+      ds.test_env$login.data <- builder$build()
+    }
+    else
+    {
+      login.data <- DSLite::setupDATASETTest("dsBase", env = ds.test_env)
+      ds.test_env$login.data <- subset(login.data, server=="study1")
+    }  
+    ds.test_env$stats.var <- list('ID', 'COLOURS', 'COLOURS.NUMBERS', 'POSITIVE.NUMBERS', 'NEGATIVE.NUMBERS', 'NUMBERS',
+                                  'POSITIVE.DECIMAL', 'NEGATIVE.DECIMAL', 'DECIMAL', 'PLANETS.CHARACTERS')
   }
 }
 
@@ -222,11 +211,19 @@ connect.dataset.3 <- function()
   log.in.data.server()
 }
 
-connect.testing.group.dataset.1 <- function()
+connect.testing.dataset.factor_levels <- function()
 {
   log.out.data.server()
   source("connection_to_datasets/login_details.R")
-  init.testing.group.dataset.1()
+  init.testing.dataset.factor_levels()
+  log.in.data.server()
+}
+
+connect.testing.dataset.factor_levels.1 <- function()
+{
+  log.out.data.server()
+  source("connection_to_datasets/login_details.R")
+  init.testing.dataset.factor_levels.1()
   log.in.data.server()
 }
 
@@ -250,7 +247,12 @@ disconnect.dataset.3 <- function()
     log.out.data.server()
 }
 
-disconnect.testing.group.dataset.1 <- function()
+disconnect.testing.dataset.factor_levels <- function()
+{
+  log.out.data.server()
+}
+
+disconnect.testing.dataset.factor_levels.1 <- function()
 {
   log.out.data.server()
 }
