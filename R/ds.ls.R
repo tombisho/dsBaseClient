@@ -193,8 +193,12 @@ if(!is.null(transmit.object))
   calltext <- call("lsDS",search.filter=transmit.object.final, env.to.search)
 
   output <- datashield.aggregate(datasources, calltext)
+
+  # dummy change
+  cat("\n Hello World from client dsBaseClient::ds.ls() \n")
   
   return(output)
+  
   }
 #ds.ls
 
