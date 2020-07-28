@@ -191,8 +191,11 @@ if(!is.null(transmit.object))
 
   # call the server side function
   cat("On client side: \n")
-  cat(transmit.object.final)	
   calltext <- call("retStrDS",search.filter=transmit.object.final, env.to.search)
+
+  cat("\n")
+  cat(calltext)
+  cat("\n")	
 
   output <- datashield.aggregate(datasources, calltext)
   
