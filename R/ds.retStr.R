@@ -192,7 +192,7 @@ if(!is.null(transmit.object))
   # call the server side function
   cat("On client side: \n")
   # overwriting transmit.object.final
-  transmit.object.final = "This is an input string from the client ..."
+  #transmit.object.final = "This is an input string from the client ..."
   calltext <- call("retStrDS",search.filter=transmit.object.final, env.to.search)
 
   #cat("\n")
