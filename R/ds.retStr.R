@@ -1,8 +1,6 @@
-#' @title lists all objects on a server-side environment
-#' @description creates a list of the names of all of the objects in
-#' a specified serverside environment. 
-#' @details When running analyses one may want to know the objects already generated. This 
-#' request is not disclosive as it only returns the names of the objects and not their contents. 
+#' @title Passes a string to a server-side environment
+#' @description Passes a string to a server side environment and prints the string returned from the server. 
+#' @details This is a function to test writing new functions and the communication between the client and the server. 
 #' 
 #' By default, objects in DataSHIELD's Active Serverside Analytic Environment (\code{.GlobalEnv})
 #' will be listed. This is the environment that contains all of the objects that server-side DataSHIELD 
