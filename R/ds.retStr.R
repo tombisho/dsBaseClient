@@ -191,6 +191,8 @@ if(!is.null(transmit.object))
   cat("On client side: \n")
   # overwriting transmit.object.final
   transmit.object.final = "This is an input string from the client"
+  # transmit.object.final = "D$cens"
+  # transmit.object.final = "EVENT"
   calltext <- call("retStrDS",search.filter=transmit.object.final, env.to.search)
 
   cat("\n Class of calltext\n")
