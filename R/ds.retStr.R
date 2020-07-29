@@ -193,9 +193,10 @@ if(!is.null(transmit.object))
   transmit.object.final = "This is an input string from the client"
   calltext <- call("retStrDS",search.filter=transmit.object.final, env.to.search)
 
-  #cat("\n")
+  cat("Class of calltext\n")
   #cat(calltext)
-  #cat("\n")	
+  cat(class(calltext))
+  cat("\n")	
 
   output <- datashield.aggregate(datasources, calltext)
   
