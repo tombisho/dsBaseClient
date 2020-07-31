@@ -91,122 +91,31 @@
 #'   
 #'   ds.retStr('hello')
 #'   
-#'   #Example 2: Obtain the list of all objects that contain "var" character in the name
-#'   #Create in the server-side variables with "var" character in the name
-#'   
-#'   ds.assign(toAssign = "D$LAB_TSC",
-#'             newobj = "var.LAB_TSC",
-#'             datasources = connections)
-#'   ds.assign(toAssign = "D$LAB_TRIG",
-#'             newobj = "var.LAB_TRIG",
-#'             datasources = connections)
-#'   ds.assign(toAssign = "D$LAB_HDL",
-#'             newobj = "var.LAB_HDL",
-#'             datasources = connections)
-#'   
-#'   ds.ls(search.filter = "var*",
-#'         env.to.search = 1L,
-#'         search.GlobalEnv = TRUE,
-#'         datasources = connections)
-#'   
-#'   # clear the Datashield R sessions and logout
-#'   datashield.logout(connections)
 #' }
 #'
 #' @export
 ds.retStr <- function(search.filter=NULL, env.to.search=1L, search.GlobalEnv=TRUE, datasources=NULL)
 {
-  
-   if(is.null(datasources)){
-    datasources <- datashield.connections_find()
-  }
 
-#make default to .GlobalEnv unambiguous
+	  # call the server side function
+	  cat("On client side: \n")
+	  # overwriting transmit.object.final
+	  # transmit.object.final = "Thisisaninputstringfromtheclient"
+	  # transmit.object.final = "D$cens"
+	  # transmit.object.final = "EVENT"
+	  calltext <- call("retStrDS",search.filter=transmit.object.final, env.to.search)
 
-if(search.GlobalEnv||is.null(env.to.search))
-{
-env.to.search<-1L
+	  cat("\n Class of calltext\n")
+	  #cat(calltext)
+	  cat(class(calltext))
+	  cat("\n What is in calltext ? \n")
+	  cat(as.character(calltext))
+	  cat("\n End of function \n")	
+
+	  output <- datashield.aggregate(datasources, calltext)
+
+	  return(output)
 }
-
-	 
-
-#make code compatible with ds.passParser
-transmit.object<-search.filter
-transmit.object.temp1<-NULL
-
-#set up character replacement
-input.string<-"*"
-replacement.string<-"_:A:_"
-replacement.string.split<-unlist(strsplit(replacement.string,split=""))
-length.rs<-length(replacement.string.split)
- 
-#Search for *s in code and convert to transmittable code
-if(!is.null(transmit.object))
-{
-	transmit.object.split<-unlist(strsplit(transmit.object,split=""))
-
-	length.to<-length(transmit.object.split)
-
-	#first check that replacement character string does not appear in original search.filter code 
-
-	if(length.to>=length.rs)
-	{
-		for(k in 1:(length.to-length.rs+1))
-		{
-			original.code.problem<-TRUE
-			for(m in 1:length.rs)
-			{
-			  if(transmit.object.split[k+m-1]!=replacement.string.split[m])
-				{
-				  original.code.problem<-FALSE
-			  }
-			}
-
-			if(original.code.problem==TRUE)
-			{
-	#			return.message<-paste0("Warning: Code replacing wildcard (i.e. '",replacement string,"' appears in your original code -please respecify")
-				return.message<-paste0("Warning: Code replacing wildcard (i.e. '",input.string,
-				"') is '",replacement.string,"' but this appears in your original search filter string - please respecify")
-				return(return.message)
-			}
-		}
-	}
-
-	for(j in 1:length.to)
-	{
-	add.to<-transmit.object.split[j]
-		if(add.to=="*")
-		{
-		add.to<-"_:A:_"
-		}
-	transmit.object.temp1<-c(transmit.object.temp1,add.to)
-	}
-	transmit.object.final<-paste(transmit.object.temp1,collapse="")
-
-	}else{
-	transmit.object.final<-NULL
-	}
-
-
-  # call the server side function
-  cat("On client side: \n")
-  # overwriting transmit.object.final
-  # transmit.object.final = "Thisisaninputstringfromtheclient"
-  # transmit.object.final = "D$cens"
-  # transmit.object.final = "EVENT"
-  calltext <- call("retStrDS",search.filter=transmit.object.final, env.to.search)
-
-  cat("\n Class of calltext\n")
-  #cat(calltext)
-  cat(class(calltext))
-  cat("\n What is in calltext ? \n")
-  cat(as.character(calltext))
-  cat("\n End of function \n")	
-
-  output <- datashield.aggregate(datasources, calltext)
-  
-  return(output)
-  }
-#ds.ls
+#ds.retStr
 
 
