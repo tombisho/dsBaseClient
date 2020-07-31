@@ -96,6 +96,8 @@
 #' @export
 ds.retStr <- function(search.filter=NULL, env.to.search=1L, search.GlobalEnv=TRUE, datasources=NULL)
 {
+	
+	  transmit.object.final = search.filter	
 
 	  # call the server side function
 	  cat("On client side: \n")
