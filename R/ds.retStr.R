@@ -91,23 +91,6 @@
 #'   
 #'   ds.retStr('hello')
 #'   
-#'   #Example 2: Obtain the list of all objects that contain "var" character in the name
-#'   #Create in the server-side variables with "var" character in the name
-#'   
-#'   ds.assign(toAssign = "D$LAB_TSC",
-#'             newobj = "var.LAB_TSC",
-#'             datasources = connections)
-#'   ds.assign(toAssign = "D$LAB_TRIG",
-#'             newobj = "var.LAB_TRIG",
-#'             datasources = connections)
-#'   ds.assign(toAssign = "D$LAB_HDL",
-#'             newobj = "var.LAB_HDL",
-#'             datasources = connections)
-#'   
-#'   ds.ls(search.filter = "var*",
-#'         env.to.search = 1L,
-#'         search.GlobalEnv = TRUE,
-#'         datasources = connections)
 #'   
 #'   # clear the Datashield R sessions and logout
 #'   datashield.logout(connections)
@@ -117,16 +100,17 @@
 ds.retStr <- function(search.filter=NULL, env.to.search=1L, search.GlobalEnv=TRUE, datasources=NULL)
 {
   
-   if(is.null(datasources)){
-    datasources <- datashield.connections_find()
-  }
+   if(is.null(datasources))
+   {
+   	 datasources <- datashield.connections_find()
+   }
 
-#make default to .GlobalEnv unambiguous
+   #make default to .GlobalEnv unambiguous
 
-if(search.GlobalEnv||is.null(env.to.search))
-{
-env.to.search<-1L
-}
+   if(search.GlobalEnv||is.null(env.to.search))
+   {
+	env.to.search<-1L
+   }
 
 	 
 
@@ -206,7 +190,8 @@ if(!is.null(transmit.object))
   output <- datashield.aggregate(datasources, calltext)
   
   return(output)
-  }
-#ds.ls
+	
+}
+#ds.retStr
 
 
