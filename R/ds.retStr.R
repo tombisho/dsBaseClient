@@ -89,7 +89,7 @@
 #'   
 #'   #Example 1: Obtain the list of  all objects on a server-side environment
 #'   
-#'   ds.ls(datasources = connections)
+#'   ds.retStr('hello')
 #'   
 #'   #Example 2: Obtain the list of all objects that contain "var" character in the name
 #'   #Create in the server-side variables with "var" character in the name
@@ -114,7 +114,8 @@
 #' }
 #'
 #' @export
-ds.retStr <- function(search.filter=NULL, env.to.search=1L, search.GlobalEnv=TRUE, datasources=NULL){
+ds.retStr <- function(search.filter=NULL, env.to.search=1L, search.GlobalEnv=TRUE, datasources=NULL)
+{
   
    if(is.null(datasources)){
     datasources <- datashield.connections_find()
@@ -190,7 +191,7 @@ if(!is.null(transmit.object))
   # call the server side function
   cat("On client side: \n")
   # overwriting transmit.object.final
-  transmit.object.final = "Thisisaninputstringfromtheclient"
+  # transmit.object.final = "Thisisaninputstringfromtheclient"
   # transmit.object.final = "D$cens"
   # transmit.object.final = "EVENT"
   calltext <- call("retStrDS",search.filter=transmit.object.final, env.to.search)
